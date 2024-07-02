@@ -8,60 +8,62 @@ const sortIcon = document.querySelector(".sort-icon");
 const handleClick = (e) => {
   const el = e.target;
   let th = el.closest("th") || el;
-  th.classList.toggle('active')
+  th.classList.toggle("active");
   th.innerHTML = "";
   const input = document.createElement("input");
   input.className = "type-input";
-  input.classList.toggle('active')
+  input.classList.toggle("active");
   input.placeholder = "Название статьи...";
   th.appendChild(input);
   const handleInput = () => {
-    countInput = input.value
-    let maxlength = 26
+    countInput = input.value;
+    let maxlength = 26;
     if (input.value.length > maxlength) {
-      const span = document.createElement('span')
-      span.innerHTML = '...'
-      span.className = 'hide-span'
-      th.appendChild(span)
-      input.removeEventListener('input', handleInput, false)
+      const span = document.createElement("span");
+      span.innerHTML = "...";
+      span.className = "hide-span";
+      th.appendChild(span);
+      input.removeEventListener("input", handleInput, false);
     }
-  }
+  };
 
   input.addEventListener("input", handleInput);
 
   input.focus();
-  input.addEventListener("blur", () => {
-    th.innerHTML = "";
-    th.classList.toggle("active", false);
-    const atr = th.getAttribute("type");
-    if (input.value != false) {
-      creteNewType(input.value, atr);
+  input.addEventListener("keyup", function (e) {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      th.innerHTML = "";
+      th.classList.toggle("active", false);
+      const atr = th.getAttribute("type");
+      if (input.value != false) {
+        creteNewType(input.value, atr);
+      }
+  
+      const groupIcons = document.createElement("div");
+      const groupCell = document.createElement("div");
+      groupCell.className = "group-cell";
+      const span = document.createElement("span");
+      let budgetTypeInner;
+      if (atr === "rev") budgetTypeInner = "Бюджет доходов";
+      else budgetTypeInner = "Бюджет расходов";
+      span.innerHTML = budgetTypeInner;
+      groupIcons.innerHTML += `
+        <svg class="create-group" width="12.000000" height="10.000000" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs/>
+        <path id="Vector" d="M4.3 1.25L5.5 2.5L10.8 2.5L10.8 8.75L1.2 8.75L1.2 1.25L4.3 1.25ZM4.8 0L1.2 0C0.53 0 0 0.56 0 1.25L0 8.75C0 9.43 0.53 10 1.2 10L10.8 10C11.46 10 12 9.43 12 8.75L12 2.5C12 1.81 11.46 1.25 10.8 1.25L6 1.25L4.8 0Z" fill="#333333" fill-opacity="0.450000" fill-rule="nonzero"/>
+        </svg>
+        <svg class='create-type' width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs/>
+        <rect id="Icon/Plus" rx="0.500000" width="15.000000" height="15.000000" transform="translate(0.500000 0.500000)" fill="#FFFFFF" fill-opacity="0"/>
+        <path id="Vector" d="M9 3L9 7L13 7L13 9L9 9L9 13L7 13L7 9L3 9L3 7L7 7L7 3L9 3Z" fill="#333333" fill-opacity="0.450000" fill-rule="evenodd"/>
+        </svg>
+      `;
+      groupIcons.className = "group-icons";
+      th.appendChild(groupCell);
+      groupCell.appendChild(groupIcons);
+      groupCell.appendChild(span);
+      set();
     }
-
-    const groupIcons = document.createElement("div");
-    const groupCell = document.createElement("div");
-    groupCell.className = "group-cell";
-    const span = document.createElement("span");
-    let budgetTypeInner;
-    if (atr === "rev") budgetTypeInner = "Бюджет доходов";
-    else budgetTypeInner = "Бюджет расходов";
-    span.innerHTML = budgetTypeInner;
-    groupIcons.innerHTML += `
-      <svg class="create-group" width="12.000000" height="10.000000" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <defs/>
-      <path id="Vector" d="M4.3 1.25L5.5 2.5L10.8 2.5L10.8 8.75L1.2 8.75L1.2 1.25L4.3 1.25ZM4.8 0L1.2 0C0.53 0 0 0.56 0 1.25L0 8.75C0 9.43 0.53 10 1.2 10L10.8 10C11.46 10 12 9.43 12 8.75L12 2.5C12 1.81 11.46 1.25 10.8 1.25L6 1.25L4.8 0Z" fill="#333333" fill-opacity="0.450000" fill-rule="nonzero"/>
-      </svg>
-      <svg class='create-type' width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <defs/>
-      <rect id="Icon/Plus" rx="0.500000" width="15.000000" height="15.000000" transform="translate(0.500000 0.500000)" fill="#FFFFFF" fill-opacity="0"/>
-      <path id="Vector" d="M9 3L9 7L13 7L13 9L9 9L9 13L7 13L7 9L3 9L3 7L7 7L7 3L9 3Z" fill="#333333" fill-opacity="0.450000" fill-rule="evenodd"/>
-      </svg>
-    `;
-    groupIcons.className = "group-icons";
-    th.appendChild(groupCell);
-    groupCell.appendChild(groupIcons);
-    groupCell.appendChild(span);
-    set();
   });
 };
 
@@ -103,8 +105,14 @@ function creteNewType(inputValue, atr) {
 
   `;
 
-  td.addEventListener('mouseenter', () => td.querySelector('.del-type').style.display = 'inline')
-  td.addEventListener('mouseleave', () => td.querySelector('.del-type').style.display = 'none')
+  td.addEventListener(
+    "mouseenter",
+    () => (td.querySelector(".del-type").style.display = "inline")
+  );
+  td.addEventListener(
+    "mouseleave",
+    () => (td.querySelector(".del-type").style.display = "none")
+  );
   // const groupIcons = document.createElement("div");
   // const groupCell = document.createElement("div");
   // groupCell.className = "group-cell";
@@ -126,7 +134,7 @@ function creteNewType(inputValue, atr) {
   // td.appendChild(groupCell);
   // groupCell.appendChild(groupIcons);
   // groupCell.appendChild(span);
-  
+
   row.appendChild(td);
 
   sortIcon.addEventListener("click", handlerSort);
@@ -245,9 +253,9 @@ function creteNewType(inputValue, atr) {
 
 set();
 
-window.addEventListener('click', (e) => {
-  const el = e.target
-  if(el.className.baseVal === 'del-type'){
-    deleteType(el.closest('td'))
+window.addEventListener("click", (e) => {
+  const el = e.target;
+  if (el.className.baseVal === "del-type") {
+    deleteType(el.closest("td"));
   }
-})
+});
